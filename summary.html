@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Claude Code - Usage & Optimization Guide</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; }
+        h1, h2, h3 { color: #2c3e50; }
+        .highlight { background: #f8f9fa; padding: 15px; border-left: 4px solid #3498db; margin: 20px 0; }
+        .provider-list { columns: 2; -webkit-columns: 2; -moz-columns: 2; }
+        .provider-list div { break-inside: avoid-column; page-break-inside: avoid; }
+        code { background: #f1f3f5; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', Courier, monospace; }
+        pre { background: #f1f3f5; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        .tip { background: #e8f4fc; border: 1px solid #bee3f8; padding: 12px; border-radius: 4px; margin: 15px 0; }
+        .note { background: #fff3cd; border: 1px solid #ffeaa7; padding: 12px; border-radius: 4px; margin: 15px 0; }
+        .yes { color: #28a745; font-weight: bold; }
+        .no { color: #dc3545; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Free Claude Code - Usage & Optimization Guide</h1>
+    <p>This guide summarizes how to use the Free Claude Code proxy, optimize its performance, and use it with Claude extensions or applications.</p>
+
+    <h2>🚀 Quick Start</h2>
+    <div class="highlight">
+        <ol>
+            <li><strong>Install</strong>: Use the platform-specific installer (PowerShell on Windows, curl|sh on macOS/Linux).</li>
+            <li><strong>Start the proxy</strong>: Run <code>fcc-server</code> in your terminal.</li>
+            <li><strong>Configure a provider</strong>: Open the Admin UI (<code>http://127.0.0.1:8082/admin</code>) and add your API key for a provider (e.g., NVIDIA NIM).</li>
+            <li><strong>Run Claude Code</strong>: Execute <code>fcc-claude</code> to launch Claude Code configured to use the local proxy.</li>
+        </ol>
+    </div>
+
+    <h2>🔌 Providers</h2>
+    <p>Free Claude Code supports 17 provider backends. After installing, configure one or more in the Admin UI:</p>
+    <div class="provider-list">
+        <div><strong>NVIDIA NIM</strong> – API key from <a href="https://build.nvidia.com/">build.nvidia.com</a></div>
+        <div><strong>OpenRouter</strong> – API key from <a href="https://openrouter.ai/keys">openrouter.ai/keys</a></div>
+        <div><strong>Google AI Studio (Gemini)</strong> – API key from <a href="https://aistudio.google.com/apikey">aistudio.google.com</a></div>
+        <div><strong>DeepSeek</strong> – API key from <a href="https://platform.deepseek.com/api_keys">platform.deepseek.com/api_keys</a></div>
+        <div><strong>Mistral La Plateforme</strong> – API key from <a href="https://console.mistral.ai/">console.mistral.ai</a></div>
+        <div><strong>Mistral Codestral</strong> – Separate <code>CODESTRAL_API_KEY</code></div>
+        <div><strong>OpenCode Zen</strong> – API key from <a href="https://opencode.ai/auth">opencode.ai/auth</a></div>
+        <div><strong>OpenCode Go</strong> – Shares OpenCode Zen key</div>
+        <div><strong>Wafer</strong> – API key from <a href="https://wafer.ai/">wafer.ai</a></div>
+        <div><strong>Kimi</strong> – API key from <a href="https://platform.moonshot.ai/console/api-keys">platform.moonshot.ai/console/api-keys</a></div>
+        <div><strong>Cerebras Inference</strong> – API key from Cerebras Cloud Console</div>
+        <div><strong>Groq</strong> – API key from <a href="https://console.groq.com/keys">console.groq.com/keys</a></div>
+        <div><strong>Fireworks AI</strong> – API key from <a href="https://fireworks.ai/account/api-keys">fireworks.ai/account/api-keys</a></div>
+        <div><strong>Z.ai</strong> – API key from <a href="https://z.ai/manage-apikey/apikey-list">z.ai/manage-apikey/apikey-list</a></div>
+        <div><strong>LM Studio</strong> – Local server; set <code>LM_STUDIO_BASE_URL</code></div>
+        <div><strong>llama.cpp</strong> – Local <code>llama-server</code> with Anthropic-compatible endpoint</div>
+        <div><strong>Ollama</strong> – Local Ollama serve; set <code>OLLAMA_BASE_URL</code></div>
+    </div>
+
+    <h2>🔧 Connecting Claude Code Clients</h2>
+    <p>The proxy provides an Anthropic-compatible API at <code>http://localhost:8082</code> (or your configured port) with auth token <code>freecc</code>. Configure any Claude Code compatible client:</p>
+
+    <h3>1. Claude Code CLI (Recommended)</h3>
+    <p>Use the provided launcher:</p>
+    <pre><code>fcc-claude</code></pre>
+    <p>This automatically sets:</p>
+    <ul>
+        <li><code>ANTHROPIC_BASE_URL=http://localhost:8082</code></li>
+        <li><code>ANTHROPIC_AUTH_TOKEN=freecc</code></li>
+        <li><code>CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY=1</code></li>
+        <li><code>CLAUDE_CODE_AUTO_COMPACT_WINDOW=190000</code></li>
+    </ul>
+
+    <h3>2. VS Code Extension</h3>
+    <p>Add to your <code>settings.json</code>:</p>
+    <pre><code>
+"claudeCode.environmentVariables": [
+  { "name": "ANTHROPIC_BASE_URL", "value": "http://localhost:8082" },
+  { "name": "ANTHROPIC_AUTH_TOKEN", "value": "freecc" },
+  { "name": "CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY", "value": "1" },
+  { "name": "CLAUDE_CODE_AUTO_COMPACT_WINDOW", "value": "190000" }
+]
+    </code></pre>
+    <p>Reload the extension. If prompted to log in, choose the Anthropic Console path; the proxy handles traffic after env vars are active.</p>
+
+    <h3>3. JetBrains ACP</h3>
+    <p>Edit the installed Claude ACP config:</p>
+    <ul>
+        <li>Windows: <code>C:\Users\%USERNAME%\AppData\Roaming\JetBrains\acp-agents\installed.json</code></li>
+        <li>Linux/macOS: <code>~/.jetbrains/acp.json</code></li>
+    </ul>
+    <p>Set for <code>acp.registry.claude-acp</code>:</p>
+    <pre><code>
+"env": {
+  "ANTHROPIC_BASE_URL": "http://localhost:8082",
+  "ANTHROPIC_AUTH_TOKEN": "freecc",
+  "CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY": "1",
+  "CLAUDE_CODE_AUTO_COMPACT_WINDOW": "190000"
+}
+    </code></pre>
+    <p>Restart the IDE.</p>
+
+    <h2>⚡ Optimization Tips</h2>
+    <div class="tip">
+        <strong>Per‑Model Routing</strong>: Set <code>MODEL_OPUS</code>, <code>MODEL_SONNET</code>, and <code>MODEL_HAIKU</code> in the Admin UI to route each Claude model tier to different providers (e.g., Opus to a powerful model, Sonnet/Haiku to faster/cheaper ones). Leave a tier blank to inherit <code>MODEL</code>.
+    </div>
+    <div class="tip">
+        <strong>Auto‑Compaction Window</strong>: The launcher sets <code>CLAUDE_CODE_AUTO_COMPACT_WINDOW=190000</code> to reduce token usage by compacting long conversations. Adjust in the Admin UI if needed.
+    </div>
+    <div class="tip">
+        <strong>Local Request Optimizations</strong>: The proxy answers trivial Claude Code probes (like token counting, model listing) locally, saving latency and provider quota. Ensure the Admin UI is configured and running.
+    </div>
+    <div class="tip">
+        <strong>Streaming & Tool Use</strong>: The proxy supports streaming, tool use, and thinking blocks. For providers that lack native streaming (e.g., some OpenAI‑compatible endpoints), the adapter translates OpenAI chat streaming into Anthropic SSE.
+    </div>
+    <div class="note">
+        <strong>Provider‑Specific Notes</strong>:
+        <ul>
+            <li>For Gemini, use the <code>gemini/</code> prefix (e.g., <code>gemini/gemini-2.5-flash</code>).</li>
+            <li>For DeepSeek, use the <code>deepseek/</code> prefix; it uses the Anthropic‑compatible endpoint.</li>
+            <li>For local providers (LM Studio, llama.cpp, Ollama), ensure the server is running and the base URL is set correctly in the Admin UI.</li>
+        </ul>
+    </div>
+
+    <h2>🔌 Optional Integrations</h2>
+    <p>Enhance your setup with:</p>
+    <ul>
+        <li><strong>Discord/Telegram Bots</strong>: Run Claude Code sessions remotely via chat. Configure in Admin UI → Messaging.</li>
+        <li><strong>Voice Notes</strong>: Transcribe voice input via local Whisper or NVIDIA NIM Riva gRPC. Install with <code>--voice-local</code> or <code>--voice-nim</code> flags, then enable in Admin UI → Messaging → Voice.</li>
+    </ul>
+
+    <h2>🧩 Can I Use This in Claude Extension or Application?</h2>
+    <p><span class="yes">Yes.</span> Free Claude Code is designed to work as a drop‑in Anthropic‑compatible proxy for any Claude Code‑compatible client, including:</p>
+    <ul>
+        <li>VS Code extension (via environment variables as shown above)</li>
+        <li>JetBrains AI Assistant / ACP (via env vars in the agent config)</li>
+        <li>Custom applications that set <code>ANTHROPIC_BASE_URL</code> and <code>ANTHROPIC_AUTH_TOKEN</code> to point at the proxy</li>
+        <li>Any tool that respects the Anthropic Messages API and accepts a custom base URL and auth token</li>
+    </ul>
+    <p>Simply launch your Claude Code extension or application with the environment variables:</p>
+    <pre><code>
+ANTHROPIC_BASE_URL=http://localhost:8082
+ANTHROPIC_AUTH_TOKEN=freecc
+CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY=1
+CLAUDE_CODE_AUTO_COMPACT_WINDOW=190000
+    </code></pre>
+    <p>Then start the client. The proxy will handle all API traffic, model routing, streaming, tool use, and optimizations.</p>
+
+    <h2>📚 Further Reading</h2>
+    <p>See the <a href="README.md">full README</a> for detailed provider examples, troubleshooting, and development instructions.</p>
+</body>
+</html>
